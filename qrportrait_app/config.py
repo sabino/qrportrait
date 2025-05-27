@@ -2,10 +2,6 @@ import configparser
 import os
 
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
-CONFIG_FILE = os.environ.get(
-    "QRPORTRAIT_CONFIG",
-    os.path.join(ROOT_DIR, "config.ini")
-)
 
 DEFAULT_CONFIG = {
     'paths': {
@@ -19,12 +15,24 @@ DEFAULT_CONFIG = {
     },
     'cards': {
         'num_cards': '10',
-    }
+    },
+    'pricing': {
+        'base_price': '1.0',
+        'discount_rate': '0.1',
+        'min_price': '0.5',
+    },
+    'payments': {
+        'records_file': os.path.join(ROOT_DIR, 'payments.csv'),
+    },
 }
 
 def load_config():
     config = configparser.ConfigParser()
     config.read_dict(DEFAULT_CONFIG)
-    if os.path.exists(CONFIG_FILE):
-        config.read(CONFIG_FILE)
+    config_file = os.environ.get(
+        "QRPORTRAIT_CONFIG",
+        os.path.join(ROOT_DIR, "config.ini")
+    )
+    if os.path.exists(config_file):
+        config.read(config_file)
     return config

@@ -68,6 +68,9 @@ Run with:
 The application requires the packages listed in `requirements.txt` as
 well as the external tools described above for the utility scripts.
 All functionality provided by the scripts can also be invoked from the
-desktop UI. Buttons are available to generate cards, sort photos and
-create thumbnails. Behaviour and default paths can be configured using
-the `config.ini` file in the project root.
+desktop UI. Buttons are available to generate cards, sort photos,
+create thumbnails and record payments for printing. Behaviour and
+default paths can be configured using the `config.ini` file in the
+project root. Pricing parameters can be tuned via the `pricing` and
+`payments` sections and payments are written to `payments.csv` by
+default.
