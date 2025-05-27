@@ -1,12 +1,13 @@
 import os
 import glob
 import threading
-from tkinter import Tk, Toplevel, Label, Button, filedialog
+from tkinter import Tk, Toplevel, Label, Button, filedialog, messagebox
+from tkinter.simpledialog import askfloat
 from PIL import Image, ImageTk
 import cv2
 from pyzbar import pyzbar
 
-from . import scripts_runner
+from . import scripts_runner, payment
 
 class DisplayWindow(Toplevel):
     """Secondary window showing photos on the external display."""
@@ -62,6 +63,8 @@ class OperatorApp(Tk):
         self.title("QrPortrait")
         self.geometry("400x200")
         self.photo_dir = ''
+        self.last_serial = None
+        self.last_images = []
         self.display = DisplayWindow(self)
         self.display.withdraw()
         Button(self, text="Select Photo Directory", command=self.select_dir).pack(pady=5)
@@ -70,6 +73,7 @@ class OperatorApp(Tk):
         Button(self, text="Generate Cards", command=self.generate_cards).pack(pady=5)
         Button(self, text="Sort Photos", command=self.sort_photos).pack(pady=5)
         Button(self, text="Generate Thumbnails", command=self.generate_thumbnails).pack(pady=5)
+        Button(self, text="Record Payment", command=self.record_payment).pack(pady=5)
         self.cap = None
         self.running = False
 
@@ -101,6 +105,17 @@ class OperatorApp(Tk):
     def generate_thumbnails(self):
         scripts_runner.generate_thumbnails()
 
+    def record_payment(self):
+        if not self.last_serial or not self.last_images:
+            return
+        discount = askfloat("Discount", "Additional discount (%)", minvalue=0, maxvalue=100)
+        if discount is None:
+            discount = 0.0
+        else:
+            discount /= 100.0
+        total = payment.checkout(self.last_serial, len(self.last_images), discount)
+        messagebox.showinfo("Payment Recorded", f"Total: ${total:.2f}")
+
     def _loop(self):
         while self.running and self.cap:
             ret, frame = self.cap.read()
@@ -113,6 +128,8 @@ class OperatorApp(Tk):
                 if os.path.isdir(folder):
                     images = sorted(glob.glob(os.path.join(folder, 'img*.jpg')))
                     self.display.show_images(images)
+                    self.last_serial = serial
+                    self.last_images = images
             cv2.waitKey(100)
 
 if __name__ == '__main__':
