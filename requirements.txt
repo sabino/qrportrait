@@ -1,0 +1,5 @@
+Pillow
+pyzbar
+opencv-python
+numpy
+reportlab
