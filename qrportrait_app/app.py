@@ -6,6 +6,8 @@ from PIL import Image, ImageTk
 import cv2
 from pyzbar import pyzbar
 
+from . import scripts_runner
+
 class DisplayWindow(Toplevel):
     """Secondary window showing photos on the external display."""
 
@@ -62,9 +64,12 @@ class OperatorApp(Tk):
         self.photo_dir = ''
         self.display = DisplayWindow(self)
         self.display.withdraw()
-        Button(self, text="Select Photo Directory", command=self.select_dir).pack(pady=10)
-        Button(self, text="Start Camera", command=self.start_camera).pack(pady=10)
-        Button(self, text="Stop Camera", command=self.stop_camera).pack(pady=10)
+        Button(self, text="Select Photo Directory", command=self.select_dir).pack(pady=5)
+        Button(self, text="Start Camera", command=self.start_camera).pack(pady=5)
+        Button(self, text="Stop Camera", command=self.stop_camera).pack(pady=5)
+        Button(self, text="Generate Cards", command=self.generate_cards).pack(pady=5)
+        Button(self, text="Sort Photos", command=self.sort_photos).pack(pady=5)
+        Button(self, text="Generate Thumbnails", command=self.generate_thumbnails).pack(pady=5)
         self.cap = None
         self.running = False
 
@@ -86,6 +91,15 @@ class OperatorApp(Tk):
         if self.cap:
             self.cap.release()
             self.cap = None
+
+    def generate_cards(self):
+        scripts_runner.generate_cards()
+
+    def sort_photos(self):
+        scripts_runner.sort_photos()
+
+    def generate_thumbnails(self):
+        scripts_runner.generate_thumbnails()
 
     def _loop(self):
         while self.running and self.cap:
