@@ -51,3 +51,19 @@ thumbnail generation can seriously slow down the web viewer, potentially
 running you up against PHP's time and memory limits as well.
 
 This script requires ImageMagick.
+
+Desktop Application
+-------------------
+
+A simple Tkinter application provides a two window interface for live
+photo viewing. The main window lets an operator choose the directory
+containing sorted photos and start the webcam scanner. The secondary
+window is intended for a second display and cycles through the images
+associated with the scanned QR code four at a time.
+
+Run with:
+
+    python -m qrportrait_app.app
+
+The application requires the packages listed in `requirements.txt` as
+well as the external tools described above for the utility scripts.
